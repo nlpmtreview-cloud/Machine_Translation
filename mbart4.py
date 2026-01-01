@@ -64,7 +64,7 @@ def run_translation(src_col, ref_col, src_lang, tgt_lang, csv_name):
     print(f"BLEU : {bleu:.2f}")
     print(f"chrF : {chrf:.2f}")
 
-# English → Tamil ONLY
+# English → Tamil 
 run_translation(
     src_col="targetText",  
     ref_col="sourceText", 
