@@ -5,9 +5,7 @@ import sacrebleu, evaluate
 from tqdm import tqdm
 import pandas as pd
 
-# =========================
 # SETTINGS
-# =========================
 model_name = "facebook/mbart-large-50-many-to-many-mmt"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print("Using device:", device)
@@ -23,9 +21,7 @@ print(f"Loaded {len(test_ds)} examples")
 
 N = 100  
 
-# =========================
 # TRANSLATION FUNCTION
-# =========================
 def translate_mbart(text, src_lang="ta_IN", tgt_lang="en_XX"):
     tokenizer.src_lang = src_lang
     inputs = tokenizer(
@@ -43,9 +39,7 @@ def translate_mbart(text, src_lang="ta_IN", tgt_lang="en_XX"):
 
     return tokenizer.decode(generated_ids[0], skip_special_tokens=True)
 
-# =========================
 # RUN TRANSLATION & EVALUATE
-# =========================
 def run_translation(src_col, ref_col, src_lang, tgt_lang, csv_name):
     preds, refs, sources = [], [], []
     print(f"\nTranslating {src_lang} → {tgt_lang} ...")
@@ -79,12 +73,10 @@ def run_translation(src_col, ref_col, src_lang, tgt_lang, csv_name):
     print(f"BLEU : {bleu:.2f}")
     print(f"chrF : {chrf:.2f}")
 
-# =========================
 # Tamil → English ONLY
-# =========================
 run_translation(
-    src_col="sourceText",     # Tamil input
-    ref_col="targetText",     # English reference
+    src_col="sourceText",    
+    ref_col="targetText",   
     src_lang="ta_IN",
     tgt_lang="en_XX",
     csv_name="mbart_results_ta2en.csv"
