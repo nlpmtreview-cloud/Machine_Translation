@@ -15,7 +15,7 @@ model = MBartForConditionalGeneration.from_pretrained(model_name).to(device)
 
 # LOAD DATASET
 test_ds = load_from_disk("test_ds")
-N = 100  # number of examples to translate
+N = 100 
 
 # TRANSLATION FUNCTION
 def translate_mbart(text, src_lang="ta_IN", tgt_lang="en_XX"):
