@@ -31,8 +31,7 @@ lora_config = LoraConfig(
 )
 model = get_peft_model(model, lora_config)
 
-model.eval()   # 🔴 VERY IMPORTANT for fast inference
-
+model.eval()
 # =========================
 # LOAD TEST DATA
 # =========================
