@@ -5,22 +5,16 @@ import pandas as pd
 import sacrebleu, evaluate
 from peft import LoraConfig, get_peft_model
 
-# =========================
 # SETTINGS
-# =========================
 model_name = "facebook/nllb-200-distilled-600M"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print("Using device:", device)
 
-# =========================
 # LOAD TOKENIZER & MODEL
-# =========================
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
 
-# =========================
-# APPLY LoRA (architecture preserved)
-# =========================
+# APPLY LoRA
 lora_config = LoraConfig(
     r=16,
     lora_alpha=32,
@@ -32,9 +26,7 @@ lora_config = LoraConfig(
 model = get_peft_model(model, lora_config)
 model.eval()
 
-# =========================
 # LOAD TEST DATA
-# =========================
 N = 100
 with open("corpus.bcn.test.ta", encoding="utf-8") as fta, \
      open("corpus.bcn.test.en", encoding="utf-8") as fen:
@@ -43,9 +35,7 @@ with open("corpus.bcn.test.ta", encoding="utf-8") as fta, \
 
 assert len(ta_lines) == len(en_lines)
 
-# =========================
 # FAST BATCH TRANSLATION
-# =========================
 def translate_batch_nllb(texts, batch_size=4):
     tokenizer.src_lang = "tam_Taml"
     all_preds = []
@@ -82,15 +72,11 @@ def translate_batch_nllb(texts, batch_size=4):
 
     return all_preds
 
-# =========================
 # RUN TRANSLATION
-# =========================
 print("\nTranslating Tamil → English ...")
 preds = translate_batch_nllb(ta_lines)
 
-# =========================
 # TEXT NORMALIZATION
-# =========================
 def normalize_text(text):
     text = text.strip()
     text = text.replace("।", ".")
@@ -99,9 +85,7 @@ def normalize_text(text):
 preds_norm = [normalize_text(p) for p in preds]
 refs_norm = [normalize_text(r) for r in en_lines]
 
-# =========================
 # SAVE OUTPUT
-# =========================
 df = pd.DataFrame({
     "Source (TA)": ta_lines,
     "Prediction (EN)": preds_norm,
@@ -116,9 +100,7 @@ df.to_csv(
 
 print("Saved: nllb_results_ta2en_fast.csv")
 
-# =========================
 # EVALUATION
-# =========================
 bleu = sacrebleu.corpus_bleu(preds_norm, [refs_norm]).score
 chrf = evaluate.load("chrf").compute(
     predictions=preds_norm,
