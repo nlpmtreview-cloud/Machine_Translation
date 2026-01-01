@@ -18,7 +18,7 @@ SRC_LANG = "en_XX"
 TGT_LANG = "ta_IN"
 
 # LOAD TEST FILES
-N = 100  # change if needed
+N = 100  
 
 with open("corpus.bcn.test.en", encoding="utf-8") as fen, \
      open("corpus.bcn.test.ta", encoding="utf-8") as fta:
